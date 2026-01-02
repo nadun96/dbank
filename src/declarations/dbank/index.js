@@ -12,16 +12,12 @@ export const canisterId = process.env.DBANK_CANISTER_ID;
  * @param {{agentOptions?: import("@dfinity/agent").HttpAgentOptions; actorOptions?: import("@dfinity/agent").ActorConfig}} [options]
  * @return {import("@dfinity/agent").ActorSubclass<import("./dbank.did.js")._SERVICE>}
  */
-export const createActor = (canisterId, options) => {
-  const agent = new HttpAgent({
-    host: process.env.NODE_ENV !== "production" ? "http://localhost:8000" : undefined,
-    verifyQuerySignatures: process.env.NODE_ENV === "production",
-    ...options?.agentOptions
-  });
-
+ export const createActor = (canisterId, options) => {
+  const agent = new HttpAgent({ ...options?.agentOptions });
+  
   // Fetch root key for certificate validation during development
-  if (process.env.NODE_ENV !== "production") {
-    agent.fetchRootKey().catch(err => {
+  if(process.env.NODE_ENV !== "production") {
+    agent.fetchRootKey().catch(err=>{
       console.warn("Unable to fetch root key. Check to ensure that your local replica is running");
       console.error(err);
     });
@@ -34,9 +30,9 @@ export const createActor = (canisterId, options) => {
     ...options?.actorOptions,
   });
 };
-
+  
 /**
  * A ready-to-use agent for the dbank canister
  * @type {import("@dfinity/agent").ActorSubclass<import("./dbank.did.js")._SERVICE>}
  */
-export const dbank = createActor(canisterId);
+ export const dbank = createActor(canisterId);
